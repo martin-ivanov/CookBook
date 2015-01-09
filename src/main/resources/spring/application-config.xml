@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:sec="http://www.springframework.org/schema/security"
+	xmlns:jms="http://www.springframework.org/schema/jms" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:amq="http://activemq.apache.org/schema/core"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans    
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/tx 
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/security
+        http://www.springframework.org/schema/security/spring-security-3.2.xsd
+        http://www.springframework.org/schema/jms 
+        http://www.springframework.org/schema/jms/spring-jms.xsd
+        http://activemq.apache.org/schema/core 
+        http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+	<context:component-scan base-package="com.cookbook.rest.*" />
+
+	<bean id="objectMapper" class="org.codehaus.jackson.map.ObjectMapper" />
+
+	<bean id="userDao" class="com.cookbook.persistence.dao.UserDAOImpl" />
+	<bean id="categoryDao" class="com.cookbook.persistence.dao.CategoryDAOImpl" />
+	<bean id="recipeDao" class="com.cookbook.persistence.dao.RecipeDAOImpl" />
+
+
+	<bean id="userService" class="com.cookbook.rest.services.UserServiceImpl" />
+	<bean id="userResource" class="com.cookbook.rest.resources.UserResource" />
+
+	<bean id="recipeService" class="com.cookbook.rest.services.RecipeServiceImpl" />
+	<bean id="recipeResource" class="com.cookbook.rest.resources.RecipeResource" />
+
+	<bean id="categoryService" class="com.cookbook.rest.services.CategoryServiceImpl" />
+	<bean id="categoryResource" class="com.cookbook.rest.resources.CategoryResource" />
+
+	<!-- Embedded ActiveMQ Broker -->
+	<amq:broker id="broker" useJmx="false" persistent="false">
+		<amq:transportConnectors>
+			<amq:transportConnector uri="tcp://localhost:0" />
+		</amq:transportConnectors>
+	</amq:broker>
+
+	<!-- ActiveMQ Destination -->
+	<amq:queue id="destination" physicalName="org.springbyexample.jms.test" />
+
+	<!-- JMS ConnectionFactory to use, configuring the embedded broker using 
+		XML -->
+	<amq:connectionFactory id="jmsFactory" brokerURL="vm://localhost" />
+
+	<!-- JMS Producer Configuration -->
+	<bean id="jmsProducerConnectionFactory"
+		class="org.springframework.jms.connection.SingleConnectionFactory"
+		depends-on="broker" p:targetConnectionFactory-ref="jmsFactory" />
+
+	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate"
+		p:connectionFactory-ref="jmsProducerConnectionFactory"
+		p:defaultDestination-ref="destination" />
+
+	<bean id="jmsMessageProducer" class="com.cookbook.jms.JMSMessageProducer">
+		<property name="jmsTemplate" ref="jmsTemplate" />
+	</bean>
+
+	<bean id="addUserListener" class="com.cookbook.jms.AddUserListener" />
+
+	<jms:listener-container container-type="default"
+		connection-factory="jmsFactory" acknowledge="auto">
+		<jms:listener destination="COOKBOOK.USER.REQUEST" ref="addUserListener"
+			selector="action = 'addUser'" />
+	</jms:listener-container>
+
+	<bean id="retrieveUserListener" class="com.cookbook.jms.RetrieveUserListener" />
+
+	<jms:listener-container container-type="default"
+		connection-factory="jmsFactory" acknowledge="auto">
+		<jms:listener destination="COOKBOOK.USER.REQUEST" ref="retrieveUserListener"
+			selector="action = 'getUser'" />
+	</jms:listener-container>
+
+
+	<bean id="retrieveCategoryListener" class="com.cookbook.jms.RetrieveCategoryListener" />
+
+	<jms:listener-container container-type="default"
+		connection-factory="jmsFactory" acknowledge="auto">
+		<jms:listener destination="COOKBOOK.CATEGORY.REQUEST"
+			ref="retrieveCategoryListener" selector="action = 'getCategory'" />
+	</jms:listener-container>
+
+	<bean id="subscribeListener" class="com.cookbook.jms.SubscribeListener" />
+
+	<jms:listener-container container-type="default"
+		connection-factory="jmsFactory" acknowledge="auto">
+		<jms:listener destination="COOKBOOK.SUBSCRIPTION.REQUEST"
+			ref="subscribeListener" selector="action = 'subscribe'" />
+	</jms:listener-container>
+	
+		<bean id="unsubscribeListener" class="com.cookbook.jms.UnsubscribeListener" />
+
+	<jms:listener-container container-type="default"
+		connection-factory="jmsFactory" acknowledge="auto">
+		<jms:listener destination="COOKBOOK.SUBSCRIPTION.REQUEST"
+			ref="unsubscribeListener" selector="action = 'unsubscribe'" />
+	</jms:listener-container>
+
+	<!-- ************ JPA configuration *********** -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+		primary="false">
+		<property name="persistenceXmlLocation" value="classpath:config/persistence.xml" />
+		<property name="persistenceUnitName" value="cookMateEntityManager" />
+		<property name="dataSource" ref="cookBookDS" />
+		<property name="packagesToScan" value="com.outlink.*" />
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="showSql" value="true" />
+				<property name="databasePlatform" value="org.hibernate.dialect.MySQL5Dialect" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean name="cookBookDS"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/cookbook" />
+		<property name="username" value="root" />
+		<property name="password" value="root" />
+
+	</bean>
+
+
+
+</beans>
