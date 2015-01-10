@@ -46,7 +46,7 @@ public interface UserService {
 	 * @throws AppException 
 	 */
 
-	public UserEntity getUserByCredentials(String username, String password);	
+	public UserEntity getUserByCredentials(String username, String password) throws AppException;	
 	
 		
 

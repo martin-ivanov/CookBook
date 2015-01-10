@@ -16,7 +16,9 @@ import org.springframework.jms.core.SessionCallback;
 import org.springframework.jms.support.JmsUtils;
 import org.springframework.jms.support.destination.DestinationResolver;
 
-public class JMSMessageProducer {
+import com.cookbook.errors.AppException;
+
+public class JMSMessageProducer  {
 
 	private static final class ProducerConsumer implements
 			SessionCallback<Message> {
@@ -85,7 +87,7 @@ public class JMSMessageProducer {
 		this.jmsTemplate = jmsTemplate;
 	}
 	
-	public String request(final String request, String queue, String action) {
+	public String request(final String request, String queue, String action) throws AppException{
 		System.out.println(jmsTemplate.getDestinationResolver());
 		// Must pass true as the second param to start the connection
 		ProducerConsumer pc = new ProducerConsumer(request, queue,
@@ -101,6 +103,10 @@ public class JMSMessageProducer {
 			} catch (JMSException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			}
+			
+			if (message==null || message.equals("")){
+				throw new AppException(404, "SystemError", "Response from JMS not found");
 			}
 			System.out.println("response: " + message);
 		}

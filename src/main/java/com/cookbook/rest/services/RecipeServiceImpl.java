@@ -65,7 +65,7 @@ public class RecipeServiceImpl implements RecipeService {
 	
 	
 	@Override
-	public RecipeWrapper searchRecipesByName(String searchForName) {
+	public RecipeWrapper searchRecipesByName(String searchForName) throws AppException {
 		String response = "";
 		RecipeEntity request = new RecipeEntity();
 		request.setName(searchForName);

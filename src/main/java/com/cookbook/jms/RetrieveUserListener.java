@@ -43,6 +43,7 @@ public class RetrieveUserListener implements
 				UserEntity user = objectMapper.readValue(msg, UserEntity.class);
 				System.out.println(user.getEmail());
 				UserEntity responseEntity = null;
+				System.out.println(user.getUserName() + "/" + user.getPassword() );
 				if (user.getUserName() != null && user.getPassword() != null) {
 					responseEntity = userDao.getUserByCredentials(
 							user.getUserName(), user.getPassword());

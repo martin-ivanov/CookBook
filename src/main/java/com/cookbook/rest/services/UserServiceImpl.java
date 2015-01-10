@@ -2,6 +2,8 @@ package com.cookbook.rest.services;
 
 import java.io.IOException;
 
+import javax.ws.rs.core.Response;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -56,8 +58,7 @@ public class UserServiceImpl implements UserService {
 		try {
 			responseEntity = objectMapper.readValue(response, UserEntity.class);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new AppException(404, "SystemError", e.getMessage());
 		}
 		
 		return responseEntity;
@@ -80,8 +81,7 @@ public class UserServiceImpl implements UserService {
 		try {
 			responseEntity = objectMapper.readValue(response, UserEntity.class);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new AppException(404, "SystemError", e.getMessage());
 		}
 		
 		return responseEntity;
@@ -89,13 +89,14 @@ public class UserServiceImpl implements UserService {
 
 
 	@Override
-	public UserEntity getUserByCredentials(String userName, String password) {
+	public UserEntity getUserByCredentials(String userName, String password) throws AppException {
 		String response = "";
 		UserEntity request = new UserEntity();
 		request.setUserName(userName);
 		request.setPassword(password);
 		
 		try {
+			System.out.println(objectMapper.writeValueAsString(request));
 			response = producer.request(objectMapper.writeValueAsString(request), USER_QUEUE, RETRIEVE_USER_OPERATION);
 			System.out.println(response);
 		} catch (IOException e) {
@@ -107,8 +108,11 @@ public class UserServiceImpl implements UserService {
 		try {
 			responseEntity = objectMapper.readValue(response, UserEntity.class);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new AppException(404, "SystemError", e.getMessage());
+		}
+		
+		if (responseEntity==null){
+			throw new AppException(404, "SystemError", "user not found");
 		}
 		
 		return responseEntity;

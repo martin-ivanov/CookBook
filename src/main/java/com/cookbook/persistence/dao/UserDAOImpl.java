@@ -37,7 +37,6 @@ public class UserDAOImpl implements UserDAO {
 
 	public UserEntity getUserById(Long id) {
 		UserEntity user = entityManager.find(UserEntity.class, id);
-		System.out.println("id:" + user.getId());
 		return user;
 	}
 
@@ -51,12 +50,16 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public UserEntity getUserByCredentials(String username, String password) {
-		UserEntity user = (UserEntity) entityManager
+		List<UserEntity> users = entityManager
 				.createQuery(
-						"SELECT u FROM UserEntity u where u.user_name = :userNameValue and u.password=:passwordValue")
+						"SELECT u FROM UserEntity u where u.userName = :userNameValue and u.password=:passwordValue", UserEntity.class)
 				.setParameter("userNameValue", username)
-				.setParameter("passwordValue", password).getSingleResult();
-		return user;
+				.setParameter("passwordValue", password)
+				.getResultList();
+		if (!users.isEmpty()){
+			return users.get(0);
+		}
+		return null;
 	}
 
 }

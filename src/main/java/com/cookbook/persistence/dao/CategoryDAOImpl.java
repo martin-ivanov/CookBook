@@ -40,7 +40,6 @@ public class CategoryDAOImpl implements CategoryDAO {
 	@Transactional
 	public CategoryEntity getCategoryById(Long id) {
 		CategoryEntity category = entityManager.find(CategoryEntity.class, id);
-		System.out.println("id:" + category.getId());
 		return category;
 	}
 	

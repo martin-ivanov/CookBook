@@ -74,7 +74,7 @@ public class UserResource {
 	public Response getUserByCredentials(@FormParam("username") String username,
 			@FormParam("password") String password) throws IOException,
 			AppException {
-		System.out.println("getById");
+		System.out.println("getByCredentials");
 		UserEntity user = userService.getUserByCredentials(username, password);
 		if (user!=null){
 			return Response.status(200).build();

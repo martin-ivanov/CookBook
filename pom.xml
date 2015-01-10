@@ -14,32 +14,17 @@
 			<plugins>
 
 				<plugin>
-					<groupId>org.codehaus.enunciate</groupId>
-					<artifactId>maven-enunciate-plugin</artifactId>
-					<version>1.29</version>
-
+					<groupId>org.jsondoc</groupId>
+					<artifactId>jsondoc-maven-plugin</artifactId>
+					<version>1.0.9</version>
 					<configuration>
-					
-						<!-- the directory where to put the docs -->
-						<docsDir>
-							${project.build.directory}/docs
-						</docsDir>
-						<configFile>enunciate.xml</configFile>
+						<version>1.1</version>
+						<basePath>http://localhost:8080/api</basePath>
+						<packages>
+							<package>com.cookbook.rest.resources</package>
+						</packages>
+						<outputFile>/tmp/jsondoc.json</outputFile>
 					</configuration>
-					<executions>
-						<execution>
-							<goals>
-								<goal>assemble</goal>
-							</goals>
-						</execution>
-					</executions>
-					<dependencies>
-						<dependency>
-							<groupId>org.codehaus.enunciate</groupId>
-							<artifactId>enunciate-amf</artifactId>
-							<version>1.29</version>
-						</dependency>
-					</dependencies>
 				</plugin>
 
 				<plugin>
@@ -328,12 +313,8 @@
 			<version>1.0.2</version>
 		</dependency>
 
-<!-- 		<dependency>
-			<groupId>org.codehaus.enunciate</groupId>
-			<artifactId>enunciate-rt</artifactId>
-			<version>1.24</version>
-
-		</dependency> -->
+		<!-- <dependency> <groupId>org.codehaus.enunciate</groupId> <artifactId>enunciate-rt</artifactId> 
+			<version>1.24</version> </dependency> -->
 
 	</dependencies>
 </project>

@@ -46,7 +46,7 @@ public interface RecipeService {
 	 * @return
 	 * @throws AppException 
 	 */
-	public RecipeWrapper searchRecipesByName(String searchForName);
+	public RecipeWrapper searchRecipesByName(String searchForName) throws AppException;
 		
 
 }

@@ -35,7 +35,7 @@ public class CategoryResource {
 
 	@Autowired
 	private CategoryService categoryService;
-	
+
 	@Autowired
 	private SubscriptionService subscriptionService;
 
@@ -54,42 +54,52 @@ public class CategoryResource {
 	 */
 	@POST
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response createCategory( @FormParam("name") String categoryName, @FormParam("desc") String categoryDesc) throws AppException {
+	public Response createCategory(@FormParam("name") String categoryName,
+			@FormParam("desc") String categoryDesc) throws AppException {
 		CategoryEntity category = new CategoryEntity();
 		category.setName(categoryName);
 		category.setDesc(categoryDesc);
 		CategoryEntity createCategory = categoryService
 				.createCategory(category);
-		return Response.status(Response.Status.CREATED)// 201
-				.entity(createCategory).build();
+		if (createCategory != null) {
+			return Response.status(Response.Status.CREATED)// 201
+					.entity(createCategory).build();
+		}
+
+		return Response.status(Response.Status.BAD_REQUEST).build();
+
 	}
 
 	@POST
 	@Path("/{id}/subscribe")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response subcribeForCategory(@PathParam("id") Long id, @FormParam("userId") Long userId)
-			throws IOException, AppException {
+	public Response subcribeForCategory(@PathParam("id") Long id,
+			@FormParam("userId") Long userId) throws IOException, AppException {
 		System.out.println("subscribe");
-		SubscriptionEntity subscription =subscriptionService.subcribe(userId, id);
-
-		return Response.status(200).entity(subscription)
-				.header("Access-Control-Allow-Headers", "X-extra-header")
-				.allow("OPTIONS").build();
+		SubscriptionEntity subscription = subscriptionService.subcribe(userId,
+				id);
+		if (subscription != null) {
+			return Response.status(200).entity(subscription)
+					.header("Access-Control-Allow-Headers", "X-extra-header")
+					.allow("OPTIONS").build();
+		}
+		return Response.status(Response.Status.BAD_REQUEST).build();
 	}
-	
+
 	@POST
 	@Path("/{id}/unsubscribe")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response unsubcribeForCategory(@PathParam("id") Long id, @FormParam("userId") Long userId)
-			throws IOException, AppException {
+	public Response unsubcribeForCategory(@PathParam("id") Long id,
+			@FormParam("userId") Long userId) throws IOException, AppException {
 		System.out.println("subscribe");
-		SubscriptionEntity subscription =subscriptionService.unsubcribe(userId, id);
+		SubscriptionEntity subscription = subscriptionService.unsubcribe(
+				userId, id);
 
 		return Response.status(200).entity(subscription)
 				.header("Access-Control-Allow-Headers", "X-extra-header")
 				.allow("OPTIONS").build();
 	}
-	
+
 	/*
 	 * *********************************** READ
 	 * ***********************************
@@ -102,9 +112,13 @@ public class CategoryResource {
 			throws IOException, AppException {
 		System.out.println("getById");
 		CategoryEntity categoryById = categoryService.getCategoryById(id);
-		return Response.status(200).entity(categoryById)
-				.header("Access-Control-Allow-Headers", "X-extra-header")
-				.allow("OPTIONS").build();
+		if (categoryById != null) {
+			return Response.status(200).entity(categoryById)
+					.header("Access-Control-Allow-Headers", "X-extra-header")
+					.allow("OPTIONS").build();
+		}
+
+		return Response.status(Response.Status.BAD_REQUEST).build();
 	}
 
 	@GET
@@ -115,6 +129,7 @@ public class CategoryResource {
 		return Response.status(200).entity(categories)
 				.header("Access-Control-Allow-Headers", "X-extra-header")
 				.allow("OPTIONS").build();
+		
 	}
 
 	@GET
@@ -125,7 +140,7 @@ public class CategoryResource {
 		System.out.println("getAllRecipes");
 		CategoryEntity category = categoryService.getCategoryById(id);
 		RecipeWrapper rw = new RecipeWrapper();
-		if (category!=null){
+		if (category != null) {
 			rw.setList(category.getRecipes());
 		}
 		return Response.status(200).entity(rw)

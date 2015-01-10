@@ -105,7 +105,7 @@
 
 	<jms:listener-container container-type="default"
 		connection-factory="jmsFactory" acknowledge="auto">
-		<jms:listener destination="COOKBOOK.SUBSCRIPTION.REQUEST"
+		<jms:listener destination="COOKBOOK.CATEGORY.REQUEST"
 			ref="subscribeListener" selector="action = 'subscribe'" />
 	</jms:listener-container>
 
@@ -113,7 +113,7 @@
 
 	<jms:listener-container container-type="default"
 		connection-factory="jmsFactory" acknowledge="auto">
-		<jms:listener destination="COOKBOOK.SUBSCRIPTION.REQUEST"
+		<jms:listener destination="COOKBOOK.CATEGORY.REQUEST"
 			ref="unsubscribeListener" selector="action = 'unsubscribe'" />
 	</jms:listener-container>
 
