@@ -37,7 +37,7 @@ public class CategoryServiceImpl implements CategoryService {
 		try {
 			response = producer.request(
 					objectMapper.writeValueAsString(request), CATEGORY_QUEUE,
-					RETRIEVE_CATEGORY_OPERATION);
+					RETRIEVE_CATEGORY_OPERATION, "");
 			System.out.println(response);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -74,7 +74,7 @@ public class CategoryServiceImpl implements CategoryService {
 	public CategoryWrapper getCategories() throws AppException {
 		String response = "";
 		response = producer.request("getAll", CATEGORY_QUEUE,
-				RETRIEVE_CATEGORY_OPERATION);
+				RETRIEVE_CATEGORY_OPERATION, "");
 		System.out.println(response);
 
 		CategoryWrapper responseEntity = null;

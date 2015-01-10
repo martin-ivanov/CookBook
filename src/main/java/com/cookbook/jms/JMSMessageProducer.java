@@ -32,13 +32,16 @@ public class JMSMessageProducer  {
 		private final String queue;
 
 		private final String action;
+		
+		private final String optinalProperty;
 
 		public ProducerConsumer(final String msg, String queue,
-				final DestinationResolver destinationResolver, String action) {
+				final DestinationResolver destinationResolver, String action, String optionalProperty) {
 			this.msg = msg;
 			this.queue = queue;
 			this.destinationResolver = destinationResolver;
 			this.action = action;
+			this.optinalProperty = optionalProperty;
 		}
 
 		public Message doInJms(final Session session) throws JMSException {
@@ -58,6 +61,7 @@ public class JMSMessageProducer  {
 						"JMSCorrelationID = '" + correlationId + "'");
 				final TextMessage textMessage = session.createTextMessage(msg);
 				textMessage.setStringProperty("action", action);
+				textMessage.setStringProperty("optional", optinalProperty);
 				textMessage.setJMSCorrelationID(correlationId);
 				textMessage.setJMSReplyTo(replyQueue);
 				// Send the request second!
@@ -87,11 +91,11 @@ public class JMSMessageProducer  {
 		this.jmsTemplate = jmsTemplate;
 	}
 	
-	public String request(final String request, String queue, String action) throws AppException{
+	public String request(final String request, String queue, String action, String optionalProperty) throws AppException{
 		System.out.println(jmsTemplate.getDestinationResolver());
 		// Must pass true as the second param to start the connection
 		ProducerConsumer pc = new ProducerConsumer(request, queue,
-				jmsTemplate.getDestinationResolver(), action);
+				jmsTemplate.getDestinationResolver(), action, optionalProperty);
 		
 		Message msg = jmsTemplate.execute(pc , true);
 		String message = "";

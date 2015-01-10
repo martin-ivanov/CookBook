@@ -19,6 +19,7 @@ import com.cookbook.rest.response.wrapper.RecipeWrapper;
 public class RecipeServiceImpl implements RecipeService {
 	
 	private static final String RETRIEVE_RECIPE_OPERATION = "getRecipe";
+	private static final String ADD_RECIPE_OPERATION = "addRecipe";
 
 	private static final String RECIPIES_QUEUE = "COOKBOOK.RECIPE";
 
@@ -33,8 +34,26 @@ public class RecipeServiceImpl implements RecipeService {
 
 	@Override
 	public RecipeEntity createRecipe(RecipeEntity recipe) throws AppException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		String response = "";
+		try {
+			response = producer.request(
+					objectMapper.writeValueAsString(recipe), RECIPIES_QUEUE,
+					ADD_RECIPE_OPERATION, "categoryId=" + recipe.getCategory().getId());
+			System.out.println(response);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		RecipeEntity responseEntity = null;
+		try {
+			responseEntity = objectMapper.readValue(response,
+					RecipeEntity.class);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return responseEntity;
 	}
 
 	@Override
@@ -46,7 +65,7 @@ public class RecipeServiceImpl implements RecipeService {
 		try {
 			response = producer.request(
 					objectMapper.writeValueAsString(request), RECIPIES_QUEUE,
-					RETRIEVE_RECIPE_OPERATION);
+					RETRIEVE_RECIPE_OPERATION, "");
 			System.out.println(response);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -72,7 +91,7 @@ public class RecipeServiceImpl implements RecipeService {
 		try {
 			response = producer.request(
 					objectMapper.writeValueAsString(request), RECIPIES_QUEUE,
-					RETRIEVE_RECIPE_OPERATION);
+					RETRIEVE_RECIPE_OPERATION, "");
 			System.out.println(response);
 		} catch (IOException e) {
 			e.printStackTrace();

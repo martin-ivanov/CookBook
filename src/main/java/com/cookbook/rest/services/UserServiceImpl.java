@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
 		System.out.println("send message");
 		String response = "";
 		try {
-			response = producer.request(objectMapper.writeValueAsString(user), USER_QUEUE, ADD_USER_OPERATION);
+			response = producer.request(objectMapper.writeValueAsString(user), USER_QUEUE, ADD_USER_OPERATION, "");
 			System.out.println(response);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
 		UserEntity request = new UserEntity();
 		request.setId(id);
 		try {
-			response = producer.request(objectMapper.writeValueAsString(request), USER_QUEUE, RETRIEVE_USER_OPERATION);
+			response = producer.request(objectMapper.writeValueAsString(request), USER_QUEUE, RETRIEVE_USER_OPERATION, "");
 			System.out.println(response);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -97,7 +97,7 @@ public class UserServiceImpl implements UserService {
 		
 		try {
 			System.out.println(objectMapper.writeValueAsString(request));
-			response = producer.request(objectMapper.writeValueAsString(request), USER_QUEUE, RETRIEVE_USER_OPERATION);
+			response = producer.request(objectMapper.writeValueAsString(request), USER_QUEUE, RETRIEVE_USER_OPERATION, "");
 			System.out.println(response);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

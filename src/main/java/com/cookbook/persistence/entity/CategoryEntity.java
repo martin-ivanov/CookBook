@@ -13,10 +13,9 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.codehaus.jackson.annotate.JsonManagedReference;
+import org.codehaus.jackson.annotate.JsonBackReference;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 /**
@@ -33,7 +32,8 @@ public class CategoryEntity implements Serializable {
 	private String desc;
 	private String name;
 	private List<RecipeEntity> recipes;
-	@JsonIgnore
+//	@JsonIgnore
+	@JsonBackReference
 	private List<UserEntity> users;
 
 	public CategoryEntity() {

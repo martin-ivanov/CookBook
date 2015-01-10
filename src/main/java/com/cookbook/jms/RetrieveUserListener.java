@@ -14,6 +14,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.listener.SessionAwareMessageListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.cookbook.persistence.dao.UserDAO;
 import com.cookbook.persistence.entity.UserEntity;
@@ -33,6 +34,7 @@ public class RetrieveUserListener implements
 	 */
 
 	@Override
+	@Transactional
 	public void onMessage(Message message, Session session) throws JMSException {
 		System.out.println("onMessage user");
 		try {

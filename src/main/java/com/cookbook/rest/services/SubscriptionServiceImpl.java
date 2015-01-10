@@ -32,7 +32,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 		try {
 			response = producer.request(
 					objectMapper.writeValueAsString(request), SUBSCRIPTION_QUEUE,
-					UNSUBSCRIBE_OPERATION);
+					UNSUBSCRIBE_OPERATION, "");
 			System.out.println(response);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -59,7 +59,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 		try {
 			response = producer.request(
 					objectMapper.writeValueAsString(request), SUBSCRIPTION_QUEUE,
-					SUBSCRIBE_OPERATION);
+					SUBSCRIBE_OPERATION, "");
 			System.out.println(response);
 		} catch (IOException e) {
 			e.printStackTrace();

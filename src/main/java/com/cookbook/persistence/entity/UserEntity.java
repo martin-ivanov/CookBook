@@ -16,6 +16,9 @@ import javax.persistence.Table;
 
 import org.codehaus.jackson.annotate.JsonBackReference;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 
 /**
  * The persistent class for the users database table.
@@ -24,6 +27,7 @@ import org.codehaus.jackson.annotate.JsonBackReference;
 @Entity
 @Table(name="users")
 @NamedQuery(name="User.findAll", query="SELECT u FROM UserEntity u")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id")
 public class UserEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Long id;
@@ -32,7 +36,7 @@ public class UserEntity implements Serializable {
 	private String role;
 	private String userName;
 	private String gcmToken;
-	@JsonBackReference
+//	@JsonBackReference
 	private List<CategoryEntity> categories;
 
 	public UserEntity() {

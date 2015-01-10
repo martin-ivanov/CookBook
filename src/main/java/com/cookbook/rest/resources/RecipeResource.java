@@ -54,17 +54,19 @@ public class RecipeResource {
 	 */
 	@POST
 	// @Consumes({ MediaType.APPLICATION_JSON })
-	@Produces({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON  + ";charset=UTF-8"})
 	public Response createRecipe(@FormParam("name") String name, @FormParam("desc") String desc, @FormParam("categoryId") Long categoryId) throws AppException {
 		RecipeEntity recipe = new RecipeEntity();
 		recipe.setName(name);
 		recipe.setDesc(desc);
 		CategoryEntity category = categoryService.getCategoryById(categoryId);
+				System.out.println("categoryNameInsert>>>"+category.getName());
 		if (category != null) {
 			recipe.setCategory(category);
 		}
-
+//		System.out.println("createdrecipe>>>>>" + recipe);
 		RecipeEntity createRecipe = recipeService.createRecipe(recipe);
+		System.out.println("createdrecipe>>>>>" + createRecipe);
 		return Response.status(Response.Status.CREATED)// 201
 				.entity(createRecipe).build();
 	}
@@ -76,7 +78,7 @@ public class RecipeResource {
 
 	@GET
 	@Path("/{id}")
-	@Produces({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON  + ";charset=UTF-8"})
 	public Response getRecipeById(@PathParam("id") Long id) throws IOException,
 			AppException {
 		System.out.println("getById");
@@ -87,7 +89,7 @@ public class RecipeResource {
 	}
 
 	@GET
-	@Produces({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON  + ";charset=UTF-8" })
 	public Response getRecipeByName(@QueryParam("name") String name)
 			throws IOException, AppException {
 		System.out.println("getByName recipe");

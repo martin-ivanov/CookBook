@@ -50,9 +50,10 @@ public class UserResource {
 	@POST
 //	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response createUser(@FormParam("username") String userName, @FormParam("email") String email,
+	public Response createUser(@FormParam("userName") String userName, @FormParam("email") String email,
 			@FormParam("password") String password, @FormParam("gcmToken") String gcmToken) throws AppException {
 		UserEntity initialUser = new UserEntity();
+		System.out.println("name" + userName);
 		initialUser.setUserName(userName);
 		initialUser.setEmail(email);
 		initialUser.setPassword(password);
@@ -71,7 +72,7 @@ public class UserResource {
 	@POST
 	@Path("/login")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response getUserByCredentials(@FormParam("username") String username,
+	public Response getUserByCredentials(@FormParam("userName") String username,
 			@FormParam("password") String password) throws IOException,
 			AppException {
 		System.out.println("getByCredentials");

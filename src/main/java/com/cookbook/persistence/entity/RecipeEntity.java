@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 @Table(name="recipe")
 @NamedQuery(name="Recipe.findAll", query="SELECT r FROM RecipeEntity r")
-//@JsonIdentityInfo (generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
+@JsonIdentityInfo (generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class RecipeEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -53,8 +53,8 @@ public class RecipeEntity implements Serializable {
 		this.id = id;
 	}
 
-
-	@Column(length=4000)
+	
+	@Column(name="recipe_desc", length=4000)
 	public String getDesc() {
 		return this.desc;
 	}
@@ -84,7 +84,7 @@ public class RecipeEntity implements Serializable {
 //	}
 
 
-	//bi-directional many-to-one association to Category
+//	bi-directional many-to-one association to Category
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="category_id", nullable=false)
 	public CategoryEntity getCategory() {

@@ -36,6 +36,7 @@ public class RecipeDAOImpl implements RecipeDAO {
 
 	@Transactional
 	public RecipeEntity addRecipe(RecipeEntity recipe) {
+
 		entityManager.persist(recipe);
 		entityManager.flush();
 
@@ -43,8 +44,13 @@ public class RecipeDAOImpl implements RecipeDAO {
 				.getCategory().getId());
 		if (category != null) {
 			for (UserEntity user : category.getUsers()) {
-				GcmHelper.sendNotification(user.getGcmToken(), "",
-						"New recipe: " + recipe.getName(), recipe.getDesc());
+				System.out.println("send notification");
+				if (user.getGcmToken() != null) {
+					GcmHelper
+							.sendNotification(user.getGcmToken(), "",
+									"New recipe: " + recipe.getName(),
+									recipe.getDesc());
+				}
 			}
 		}
 		return recipe;

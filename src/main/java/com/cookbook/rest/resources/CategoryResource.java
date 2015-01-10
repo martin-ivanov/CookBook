@@ -53,7 +53,7 @@ public class CategoryResource {
 	 * @throws AppException
 	 */
 	@POST
-	@Produces({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON  + ";charset=UTF-8" })
 	public Response createCategory(@FormParam("name") String categoryName,
 			@FormParam("desc") String categoryDesc) throws AppException {
 		CategoryEntity category = new CategoryEntity();
@@ -107,7 +107,7 @@ public class CategoryResource {
 
 	@GET
 	@Path("/{id}")
-	@Produces({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON  + ";charset=UTF-8"})
 	public Response getCategoryById(@PathParam("id") Long id)
 			throws IOException, AppException {
 		System.out.println("getById");
@@ -122,7 +122,7 @@ public class CategoryResource {
 	}
 
 	@GET
-	@Produces({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON  + ";charset=UTF-8" })
 	public Response getCategories() throws IOException, AppException {
 		System.out.println("getAll");
 		CategoryWrapper categories = categoryService.getCategories();
@@ -134,7 +134,7 @@ public class CategoryResource {
 
 	@GET
 	@Path("/{id}/recipes")
-	@Produces({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON  + ";charset=UTF-8"})
 	public Response getCategoryRecipes(@PathParam("id") Long id)
 			throws IOException, AppException {
 		System.out.println("getAllRecipes");
