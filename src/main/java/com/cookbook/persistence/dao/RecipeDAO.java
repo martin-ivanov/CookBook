@@ -42,5 +42,14 @@ public interface RecipeDAO {
 	 * @throws AppException 
 	 */
 	public RecipeEntity getRecipeById(Long id);
+	
+	/**
+	 * Retrieves recipe entity from the database by a given ID
+	 * 
+	 * @param id
+	 * @return RecipeDetail instance
+	 * @throws AppException 
+	 */
+	public List<RecipeEntity> searchRecipesByName(String searchForName);
 
 }

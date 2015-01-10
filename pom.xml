@@ -5,9 +5,43 @@
 	<artifactId>Outlink</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
+
+
+
+
 	<build>
 		<pluginManagement>
 			<plugins>
+
+				<plugin>
+					<groupId>org.codehaus.enunciate</groupId>
+					<artifactId>maven-enunciate-plugin</artifactId>
+					<version>1.29</version>
+
+					<configuration>
+					
+						<!-- the directory where to put the docs -->
+						<docsDir>
+							${project.build.directory}/docs
+						</docsDir>
+						<configFile>enunciate.xml</configFile>
+					</configuration>
+					<executions>
+						<execution>
+							<goals>
+								<goal>assemble</goal>
+							</goals>
+						</execution>
+					</executions>
+					<dependencies>
+						<dependency>
+							<groupId>org.codehaus.enunciate</groupId>
+							<artifactId>enunciate-amf</artifactId>
+							<version>1.29</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
@@ -293,6 +327,13 @@
 			<artifactId>gcm-server</artifactId>
 			<version>1.0.2</version>
 		</dependency>
+
+<!-- 		<dependency>
+			<groupId>org.codehaus.enunciate</groupId>
+			<artifactId>enunciate-rt</artifactId>
+			<version>1.24</version>
+
+		</dependency> -->
 
 	</dependencies>
 </project>

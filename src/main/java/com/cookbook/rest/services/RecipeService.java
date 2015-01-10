@@ -2,6 +2,7 @@ package com.cookbook.rest.services;
 
 import com.cookbook.errors.AppException;
 import com.cookbook.persistence.entity.RecipeEntity;
+import com.cookbook.rest.response.wrapper.RecipeWrapper;
 
 
 /**
@@ -37,6 +38,15 @@ public interface RecipeService {
 	 * @throws AppException 
 	 */
 	public RecipeEntity getRecipeById(Long id) throws AppException;
+	
+	/**
+	 * Returns a recipe given search condition
+	 * 
+	 * @param id
+	 * @return
+	 * @throws AppException 
+	 */
+	public RecipeWrapper searchRecipesByName(String searchForName);
 		
 
 }

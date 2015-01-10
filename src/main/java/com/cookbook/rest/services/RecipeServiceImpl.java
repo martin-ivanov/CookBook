@@ -1,11 +1,14 @@
 package com.cookbook.rest.services;
 
+import java.io.IOException;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cookbook.errors.AppException;
 import com.cookbook.jms.JMSMessageProducer;
 import com.cookbook.persistence.entity.RecipeEntity;
+import com.cookbook.rest.response.wrapper.RecipeWrapper;
 
 
 /**
@@ -15,6 +18,10 @@ import com.cookbook.persistence.entity.RecipeEntity;
  */
 public class RecipeServiceImpl implements RecipeService {
 	
+	private static final String RETRIEVE_RECIPE_OPERATION = "getRecipe";
+
+	private static final String RECIPIES_QUEUE = "COOKBOOK.RECIPE";
+
 	@Autowired
 	CategoryService categoryService;
 	
@@ -32,8 +39,54 @@ public class RecipeServiceImpl implements RecipeService {
 
 	@Override
 	public RecipeEntity getRecipeById(Long id) throws AppException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		String response = "";
+		RecipeEntity request = new RecipeEntity();
+		request.setId(id);
+		try {
+			response = producer.request(
+					objectMapper.writeValueAsString(request), RECIPIES_QUEUE,
+					RETRIEVE_RECIPE_OPERATION);
+			System.out.println(response);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		RecipeEntity responseEntity = null;
+		try {
+			responseEntity = objectMapper.readValue(response,
+					RecipeEntity.class);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return responseEntity;
+	}
+	
+	
+	@Override
+	public RecipeWrapper searchRecipesByName(String searchForName) {
+		String response = "";
+		RecipeEntity request = new RecipeEntity();
+		request.setName(searchForName);
+		try {
+			response = producer.request(
+					objectMapper.writeValueAsString(request), RECIPIES_QUEUE,
+					RETRIEVE_RECIPE_OPERATION);
+			System.out.println(response);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		RecipeWrapper responseEntity = null;
+		try {
+			responseEntity = objectMapper.readValue(response,
+					RecipeWrapper.class);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return responseEntity;
 	}
 
 
@@ -60,8 +113,6 @@ public class RecipeServiceImpl implements RecipeService {
 	public void setObjectMapper(ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
 	}
-	
-	
-	
+
 	
 }

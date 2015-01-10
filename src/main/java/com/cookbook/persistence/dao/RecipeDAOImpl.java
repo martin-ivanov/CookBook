@@ -8,6 +8,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Root;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +39,12 @@ public class RecipeDAOImpl implements RecipeDAO {
 		entityManager.persist(recipe);
 		entityManager.flush();
 
-		CategoryEntity category = categoryDao.getCategoryById(recipe.getCategory().getId());
+		CategoryEntity category = categoryDao.getCategoryById(recipe
+				.getCategory().getId());
 		if (category != null) {
 			for (UserEntity user : category.getUsers()) {
-				GcmHelper.sendNotification(user.getGcmToken(), "", "New recipe: " + recipe.getName(), recipe.getDesc());
+				GcmHelper.sendNotification(user.getGcmToken(), "",
+						"New recipe: " + recipe.getName(), recipe.getDesc());
 			}
 		}
 		return recipe;
@@ -57,15 +60,30 @@ public class RecipeDAOImpl implements RecipeDAO {
 		System.out.println("id:" + recipe.getId());
 		return recipe;
 	}
-	
-	
-	public List<RecipeEntity> searchRecipesByName() {
+
+	public List<RecipeEntity> searchRecipesByName(String searchForName) {
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<RecipeEntity> query = cb.createQuery(RecipeEntity.class);
 		Root<RecipeEntity> root = query.from(RecipeEntity.class);
-		Expression<Long> categoryId = root.get("categoryId");
+		ParameterExpression<String> nameExpr = cb.parameter(String.class);
+		query.where(cb.like(root.<String> get("name"),
+				cb.parameter(String.class, "param")));
+
+		Expression<Long> categoryId = root.get("category");
 		query.groupBy(categoryId);
-		return entityManager.createQuery(query).getResultList();
+		TypedQuery<RecipeEntity> tq = entityManager.createQuery(query);
+		tq.setParameter("param", "%" + searchForName + "%");
+
+		return tq.getResultList();
 	}
 
+	public List<RecipeEntity> getRecipesByCategory(Long categoryId) {
+		List<RecipeEntity> recipies = entityManager
+				.createQuery(
+						"SELECT u FROM RecipeEntity u where u.categoryId = :categoryIdValue",
+						RecipeEntity.class)
+				.setParameter("categoryIdValue", categoryId).getResultList();
+		return recipies;
+
+	}
 }

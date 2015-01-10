@@ -26,6 +26,7 @@
 	<bean id="userDao" class="com.cookbook.persistence.dao.UserDAOImpl" />
 	<bean id="categoryDao" class="com.cookbook.persistence.dao.CategoryDAOImpl" />
 	<bean id="recipeDao" class="com.cookbook.persistence.dao.RecipeDAOImpl" />
+	<bean id="subscriptionDao" class="com.cookbook.persistence.dao.SubscriptionDAOImpl" />
 
 
 	<bean id="userService" class="com.cookbook.rest.services.UserServiceImpl" />
@@ -36,6 +37,9 @@
 
 	<bean id="categoryService" class="com.cookbook.rest.services.CategoryServiceImpl" />
 	<bean id="categoryResource" class="com.cookbook.rest.resources.CategoryResource" />
+
+	<bean id="subscriptionService" class="com.cookbook.rest.services.SubscriptionServiceImpl" />
+
 
 	<!-- Embedded ActiveMQ Broker -->
 	<amq:broker id="broker" useJmx="false" persistent="false">
@@ -89,6 +93,14 @@
 			ref="retrieveCategoryListener" selector="action = 'getCategory'" />
 	</jms:listener-container>
 
+	<bean id="retrieveRecipeListener" class="com.cookbook.jms.RetrieveRecipeListener" />
+
+	<jms:listener-container container-type="default"
+		connection-factory="jmsFactory" acknowledge="auto">
+		<jms:listener destination="COOKBOOK.RECIPE.REQUEST"
+			ref="retrieveRecipeListener" selector="action = 'getRecipe'" />
+	</jms:listener-container>
+
 	<bean id="subscribeListener" class="com.cookbook.jms.SubscribeListener" />
 
 	<jms:listener-container container-type="default"
@@ -96,8 +108,8 @@
 		<jms:listener destination="COOKBOOK.SUBSCRIPTION.REQUEST"
 			ref="subscribeListener" selector="action = 'subscribe'" />
 	</jms:listener-container>
-	
-		<bean id="unsubscribeListener" class="com.cookbook.jms.UnsubscribeListener" />
+
+	<bean id="unsubscribeListener" class="com.cookbook.jms.UnsubscribeListener" />
 
 	<jms:listener-container container-type="default"
 		connection-factory="jmsFactory" acknowledge="auto">

@@ -1,32 +1,47 @@
 package com.cookbook.persistence.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import org.codehaus.jackson.annotate.JsonManagedReference;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 /**
  * The persistent class for the category database table.
  * 
  */
 @Entity
-@Table(name="category")
-@NamedQuery(name="Category.findAll", query="SELECT c FROM CategoryEntity c")
+@Table(name = "category")
+@NamedQuery(name = "Category.findAll", query = "SELECT c FROM CategoryEntity c")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id")
 public class CategoryEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Long id;
 	private String desc;
 	private String name;
 	private List<RecipeEntity> recipes;
+	@JsonIgnore
 	private List<UserEntity> users;
 
 	public CategoryEntity() {
 	}
 
-
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(unique=true, nullable=false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(unique = true, nullable = false)
 	public Long getId() {
 		return this.id;
 	}
@@ -35,8 +50,7 @@ public class CategoryEntity implements Serializable {
 		this.id = id;
 	}
 
-
-	@Column(length=4000)
+	@Column(length = 4000)
 	public String getDesc() {
 		return this.desc;
 	}
@@ -45,8 +59,7 @@ public class CategoryEntity implements Serializable {
 		this.desc = desc;
 	}
 
-
-	@Column(length=100)
+	@Column(length = 100)
 	public String getName() {
 		return this.name;
 	}
@@ -55,9 +68,8 @@ public class CategoryEntity implements Serializable {
 		this.name = name;
 	}
 
-
-	//bi-directional many-to-one association to Recipe
-	@OneToMany(mappedBy="category")
+	// bi-directional many-to-one association to Recipe
+	@OneToMany(mappedBy = "category")
 	public List<RecipeEntity> getRecipes() {
 		return this.recipes;
 	}
@@ -80,9 +92,8 @@ public class CategoryEntity implements Serializable {
 		return recipe;
 	}
 
-
-	//bi-directional many-to-many association to User
-	@ManyToMany(mappedBy="categories")
+	// bi-directional many-to-many association to User
+	@ManyToMany(mappedBy = "categories")
 	public List<UserEntity> getUsers() {
 		return this.users;
 	}

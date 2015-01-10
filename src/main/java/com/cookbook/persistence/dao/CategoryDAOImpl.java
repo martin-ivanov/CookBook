@@ -44,13 +44,5 @@ public class CategoryDAOImpl implements CategoryDAO {
 		return category;
 	}
 	
-	public List<RecipeEntity> getRecipesByCategoryId(Long id) {
-		CategoryEntity category = entityManager.find(CategoryEntity.class, id);
-		return category.getRecipes();
-	}
-
-
-
-
 
 }
