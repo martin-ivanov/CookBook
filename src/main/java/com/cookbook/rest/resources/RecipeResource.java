@@ -2,7 +2,7 @@ package com.cookbook.rest.resources;
 
 import java.io.IOException;
 
-import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -16,8 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.cookbook.errors.AppException;
+import com.cookbook.persistence.entity.CategoryEntity;
 import com.cookbook.persistence.entity.RecipeEntity;
 import com.cookbook.rest.response.wrapper.RecipeWrapper;
+import com.cookbook.rest.services.CategoryService;
 import com.cookbook.rest.services.RecipeService;
 
 /**
@@ -33,7 +35,10 @@ public class RecipeResource {
 
 	@Autowired
 	private RecipeService recipeService;
-	
+
+	@Autowired
+	private CategoryService categoryService;
+
 	/*
 	 * *********************************** CREATE
 	 * ***********************************
@@ -48,9 +53,17 @@ public class RecipeResource {
 	 * @throws AppException
 	 */
 	@POST
-	@Consumes({ MediaType.APPLICATION_JSON })
+	// @Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response createRecipe(RecipeEntity recipe) throws AppException {
+	public Response createRecipe(@FormParam("name") String name, @FormParam("desc") String desc, @FormParam("categoryId") Long categoryId) throws AppException {
+		RecipeEntity recipe = new RecipeEntity();
+		recipe.setName(name);
+		recipe.setDesc(desc);
+		CategoryEntity category = categoryService.getCategoryById(categoryId);
+		if (category != null) {
+			recipe.setCategory(category);
+		}
+
 		RecipeEntity createRecipe = recipeService.createRecipe(recipe);
 		return Response.status(Response.Status.CREATED)// 201
 				.entity(createRecipe).build();
@@ -72,19 +85,17 @@ public class RecipeResource {
 				.header("Access-Control-Allow-Headers", "X-extra-header")
 				.allow("OPTIONS").build();
 	}
-	
+
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response getRecipeByName(@QueryParam("name") String name) throws IOException,
-			AppException {
+	public Response getRecipeByName(@QueryParam("name") String name)
+			throws IOException, AppException {
 		System.out.println("getByName recipe");
 		RecipeWrapper recipesByName = recipeService.searchRecipesByName(name);
 		return Response.status(200).entity(recipesByName)
 				.header("Access-Control-Allow-Headers", "X-extra-header")
 				.allow("OPTIONS").build();
 	}
-
-
 
 	public void setRecipeService(RecipeService recipeService) {
 		this.recipeService = recipeService;

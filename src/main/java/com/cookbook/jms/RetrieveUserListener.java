@@ -41,7 +41,6 @@ public class RetrieveUserListener implements
 				TextMessage tm = (TextMessage) message;
 				String msg = tm.getText();
 				UserEntity user = objectMapper.readValue(msg, UserEntity.class);
-				System.out.println(user.getEmail());
 				UserEntity responseEntity = null;
 				System.out.println(user.getUserName() + "/" + user.getPassword() );
 				if (user.getUserName() != null && user.getPassword() != null) {
